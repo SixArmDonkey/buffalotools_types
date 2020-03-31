@@ -8,7 +8,9 @@ MIT License
 
 ## Installation
 
-Download the package for now.  
+I will add this to Packagist soon.  
+
+Extract to to /vendor/buffalokiwi/types in your project.
   
 ---
   

@@ -8,9 +8,10 @@ MIT License
 
 ## Installation
 
-I will add this to Packagist soon.  
+```
+composer require buffalokiwi/types
+```
 
-Extract to to /vendor/buffalokiwi/types in your project.
   
 ---
   

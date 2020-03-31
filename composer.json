@@ -5,11 +5,13 @@
   "homepage"    : "https://github.com/SixArmDonkey/types",
 	"license"     : "MIT",
 	"type"        : "project",
-  "authors"     : {
-    "name" : "John Quinn",
-    "email" : "johnquinn3@gmail.com",
-    "role" : "Developer"
-  },
+  "authors"     : [
+    {
+      "name" : "John Quinn",
+      "email" : "johnquinn3@gmail.com",
+      "role" : "Developer"
+    }
+  ],
   "autoload" : {
     "classmap": ["src/"]
   },
@@ -23,5 +25,5 @@
     "phpunit/phpunit": "^8",
 		"phpunit/php-invoker": "^2.0"
   }
-}
+} 
 

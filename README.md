@@ -2,6 +2,8 @@
 
 An extremely useful package containing Enum, BitSet, Set and BigSet types for PHP 7.4.
 
+MIT License
+
 ---
 
 ## Installation

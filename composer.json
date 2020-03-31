@@ -2,7 +2,7 @@
 	"name"        : "buffalokiwi/types",
 	"description" : "Enum and Set for PHP 7.4",
 	"keywords"    : ["enum,set"],
-	"license"     : "OSL 3.0",
+	"license"     : "MIT",
 	"type"        : "project",
   "autoload" : {
     "classmap": ["src/"]

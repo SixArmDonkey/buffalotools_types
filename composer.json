@@ -1,7 +1,7 @@
 {
-	"name"        : "buffalokiwi/buffalotools/types",
+	"name"        : "buffalokiwi/buffalotools_types",
 	"description" : "Enum and Set for PHP 7.4",
-	"keywords"    : ["enum,set"],
+	"keywords"    : ["enum","set"],
   "homepage"    : "https://github.com/SixArmDonkey/types",
 	"license"     : "MIT",
 	"type"        : "library",

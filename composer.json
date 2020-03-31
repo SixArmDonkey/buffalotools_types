@@ -4,7 +4,7 @@
 	"keywords"    : ["enum,set"],
   "homepage"    : "https://github.com/SixArmDonkey/types",
 	"license"     : "MIT",
-	"type"        : "project",
+	"type"        : "library",
   "authors"     : [
     {
       "name" : "John Quinn",

@@ -9,7 +9,7 @@ MIT License
 ## Installation
 
 ```
-composer require buffalokiwi/types
+composer require buffalokiwi/buffalotools_types
 ```
 
   

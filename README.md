@@ -6,6 +6,17 @@ MIT License
 
 ---
 
+## Table of Contents
+
+1. [Installation](#installation)
+2. [Enum / State Machine](#enumstatemachineforphp7.4)
+3. [Bit Set](#bitset)
+4. [Set](#set)
+5. [BigSet](#bigset)
+
+
+---
+
 ## Installation
 
 ```
@@ -14,6 +25,7 @@ composer require buffalokiwi/buffalotools_types
 
   
 ---
+
   
 ## Enum State Machine for PHP 7.4
 

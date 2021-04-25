@@ -149,9 +149,13 @@ interface IEnum extends JsonSerializable
    * Test if the enum value changed from one state to another during this 
    * runtime.  This only accepts enum string values, not the object constant names.
    * @param string $value Value this enum may have had.
+   * @param string $from Change from value
+   * @param string $to change to value 
+   * @param bool $strict If enabled, this will check that $from changed directly to $to.  Otherwise, this will ensure 
+   * that the enum at one point had a value of $from and that it had also been equal to $to at some point.
    * @return bool
    */
-  public function changedFromTo( string $from, string $to ) : bool;  
+  public function changedFromTo( string $from, string $to, bool $strict = false ) : bool;
   
   
   /**

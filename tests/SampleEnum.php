@@ -13,6 +13,8 @@ class SampleEnum extends \buffalokiwi\buffalotools\types\Enum
 {
   const KEY1 = 'value1';
   const KEY2 = 'value2';
+  const KEY3 = 'value3';
   
-  protected array $enum = [self::KEY1, self::KEY2];
+  
+  protected array $enum = [self::KEY1, self::KEY2, self::KEY3];
 }

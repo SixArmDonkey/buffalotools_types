@@ -284,9 +284,11 @@ class Enum implements IEnum
   
   /**
    * A list of status changes that have occurred during this object's lifetime.
-   * @var array [from => to]
+   * @var array [from => [to]]
    */
   private array $changeLog = [];
+  
+  private array $changes = [];
   
   /**
    * Change event 
@@ -536,7 +538,7 @@ class Enum implements IEnum
    */
   public function compare( IEnum $that ) : int
   {
-    if ( !$this->equals( $that ))
+    if ( static::class != get_class( $that ))
       throw new \InvalidArgumentException( 'Supplied IEnum instance is not an instance of ' . static::class . '.  got ' . get_class( $that ));
     
     return $this->indexOf( $this->value ) <=> $that->indexOf( $that->value());
@@ -617,10 +619,9 @@ class Enum implements IEnum
     if ( $res === false )
       return -1;
     return $res;
-  }
+  }  
+
   
-
-
   /**
    * Sets the current enum value
    * @param string $p Enum value
@@ -635,7 +636,6 @@ class Enum implements IEnum
     {
       throw new InvalidArgumentException( '"' . $p . '" is not a member of ' . static::class );
     }
-            
     
     $this->hasSetValue = true;
     
@@ -649,23 +649,31 @@ class Enum implements IEnum
         $p = reset( $p );
       
       $this->value = $p;
-      $this->changeLog[$old] = $p;
+      
+      $this->changeLog[$old][$p] = true;
       
       //..Allow the change event to throw exceptions and cause a rollback.
       try {
         $this->_onChange( $old, $p );
       } catch( \Exception $e ) {
         $this->value = $old;
-        unset( $this->changeLog[$old] );
+        
+        if ( isset( $this->changeLog[$old][$p] ))
+        {
+          unset( $this->changeLog[$old][$p] );
+        }
+        
         throw $e;
       }
+      
+      $this->changes[] = $p;      
     }
   }
 
 
   /**
    * Retrieve the value of this enum
-   * @return string value 
+   * @return string value
    */
   public function value() : string
   {
@@ -677,11 +685,18 @@ class Enum implements IEnum
    * Test if the enum value changed from one state to another during this 
    * runtime.  This only accepts enum string values, not the object constant names.
    * @param string $value Value this enum may have had.
+   * @param string $from Change from value
+   * @param string $to change to value 
+   * @param bool $strict If enabled, this will check that $from changed directly to $to.  Otherwise, this will ensure 
+   * that the enum at one point had a value of $from and that it had also been equal to $to at some point.
    * @return bool
    */
-  public function changedFromTo( string $from, string $to ) : bool 
+  public function changedFromTo( string $from, string $to, bool $strict = false ) : bool 
   {
-    return isset( $this->changeLog[$from] ) && $this->changeLog[$from] == $to;
+    if ( $strict )
+      return isset( $this->changeLog[$from] ) && isset( $this->changeLog[$from][$to] );
+    
+    return isset( $this->changeLog[$from] ) && in_array( $to, $this->changes );
   }
   
   
@@ -692,17 +707,17 @@ class Enum implements IEnum
    */
   public function changedTo( string $to ) : bool
   {
-    return in_array( $to, $this->changeLog );
+    return in_array( $to, $this->changes );
   }
   
   
   /**
-   * Retrieve a chronological list of all changes to this enum.
+   * Retrieve a list of all changes to this enum.
    * @return array changes [from] => to
    */
   public function getChanges() : array
   {
-    return $this->changeLog;
+    return $this->changes;
   }
   
   
@@ -756,7 +771,7 @@ class Enum implements IEnum
     foreach( $this->values as $enum => $stored )
     {
       if ( $stored == $value )
-        return $enum;
+        return (string)$enum;
     }
     
     throw new InvalidArgumentException( 'Supplied value is not a member of ' . static::class );

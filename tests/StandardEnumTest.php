@@ -172,4 +172,198 @@ class StandardEnumTest extends AbstractEnumTest
     $enum->setValue( ValuedEnum::KEY2 );
     $this->assertEquals( ValuedEnum::VALUE2, $enum->getStoredValue());        
   }  
+  
+  
+  
+  public function testOnChange() : void
+  {
+    $enum = new SampleEnum( SampleEnum::KEY1 );
+    
+    $i = 0;    
+    $enum->setOnChange( function( SampleEnum $e, string $oldValue, string $newValue ) use (&$i) : void {
+      $this->assertEquals( SampleEnum::KEY1, $oldValue );
+      $this->assertEquals( SampleEnum::KEY2, $newValue );
+      $i++;
+    });
+    
+    $enum->setValue( SampleEnum::KEY2 );
+    $this->assertEquals( 1, $i );
+    
+  }
+  
+  
+  /**
+   * Tests that the enum will track changes
+   * @return void
+   */
+  public function testChangeTo() : void
+  {
+    $enum = new SampleEnum( SampleEnum::KEY1 );
+    $this->assertFalse( $enum->changedTo( SampleEnum::KEY1 ));
+    $this->assertTrue( empty( $enum->getChanges()));
+    
+    $enum->setValue( SampleEnum::KEY2 );
+    $this->assertTrue( $enum->changedTo( SampleEnum::KEY2 ));
+    $this->assertFalse( $enum->changedTo( SampleEnum::KEY1 ));    
+    
+    
+    
+    $enum = new SampleEnum( SampleEnum::KEY1 );
+    $enum->setOnChange( function( SampleEnum $e, string $oldValue, string $newValue ) : void {
+      throw new \Exception();
+    });
+        
+    $this->expectException( \Exception::class );
+    $enum->setValue( 'dummy' );
+    
+    $this->assertEquals( SampleEnum::KEY1, $enum->value());
+    $this->assertFalse( in_array( 'dummy', $enum->getChanges()));
+  }
+  
+  
+  /**
+   * Test that the enum tracks changes when a state changes from something to something else.
+   */
+  public function testChangeFromTo() : void
+  {
+    $enum = new SampleEnum( SampleEnum::KEY1 );
+    $this->assertTrue( empty( $enum->getChanges()));
+    
+    $enum->setValue( SampleEnum::KEY2 );
+    $this->assertTrue( $enum->changedFromTo( SampleEnum::KEY1, SampleEnum::KEY2 ));
+
+    $enum->setValue( SampleEnum::KEY3 );
+    $this->assertTrue( $enum->changedFromTo( SampleEnum::KEY1, SampleEnum::KEY2 ));
+    $this->assertTrue( $enum->changedFromTo( SampleEnum::KEY2, SampleEnum::KEY3 ));
+    $this->assertTrue( $enum->changedFromTo( SampleEnum::KEY1, SampleEnum::KEY3 ));        
+    
+    
+    $enum = new SampleEnum( SampleEnum::KEY1 );
+    $enum->setValue( SampleEnum::KEY2 );
+    $enum->setValue( SampleEnum::KEY1 );
+    $enum->setValue( SampleEnum::KEY3 );
+    
+    $this->assertTrue( $enum->changedFromTo( SampleEnum::KEY1, SampleEnum::KEY2 ));
+    
+  }
+  
+
+  public function testIndexOf() : void
+  {
+    $enum1 = new SampleEnum();    
+    
+    $this->assertEquals( 0, $enum1->indexOf( SampleEnum::KEY1 ));
+    $this->assertEquals( 1, $enum1->indexOf( SampleEnum::KEY2 ));
+    $this->assertEquals( 2, $enum1->indexOf( SampleEnum::KEY3 ));
+  }
+
+  
+  /**
+   * Tests that movenext causes the enum to move to the next available status 
+   * @return void
+   */
+  public function testMoveNext() : void
+  {
+    $enum = new SampleEnum( SampleEnum::KEY1 );
+    $this->assertEquals( SampleEnum::KEY1, $enum->value());
+    
+    $enum->moveNext();
+    $this->assertEquals( SampleEnum::KEY2, $enum->value());
+    
+    $enum->moveNext();
+    $this->assertEquals( SampleEnum::KEY3, $enum->value());    
+    
+    $enum->moveNext();
+    $this->assertEquals( SampleEnum::KEY3, $enum->value());        
+  }
+  
+  
+  /**
+   * Tests the movePrevious() method.
+   * This should move to the previous value by index.
+   * @return void
+   */
+  public function testMovePrevious() : void
+  {
+    $enum = new SampleEnum( SampleEnum::KEY3 );
+    $this->assertEquals( SampleEnum::KEY3, $enum->value());
+    
+    $enum->movePrevious();
+    $this->assertEquals( SampleEnum::KEY2, $enum->value());
+    
+    $enum->movePrevious();
+    $this->assertEquals( SampleEnum::KEY1, $enum->value());
+    
+    $enum->movePrevious();
+    $this->assertEquals( SampleEnum::KEY1, $enum->value());
+  }
+  
+  
+  public function testCompare() : void
+  {
+    $enum1 = new SampleEnum( SampleEnum::KEY1 );
+    $enum1a = new SampleEnum( SampleEnum::KEY1 );
+    
+    $enum2 = new SampleEnum( SampleEnum::KEY2 );
+    $enum3 = new SampleEnum( SampleEnum::KEY3 );
+    
+    $this->assertEquals( -1, $enum1->compare( $enum2 ));
+    $this->assertEquals( -1, $enum1->compare( $enum3 ));
+    $this->assertEquals( 0, $enum1->compare( $enum1a ));
+    $this->assertEquals( 1, $enum2->compare( $enum1 ));
+  }
+  
+  
+  public function testCompareValues() : void
+  {
+    $enum1 = new SampleEnum( SampleEnum::KEY1 );
+    $enum2 = new SampleEnum( SampleEnum::KEY2 );
+    
+    $this->assertEquals( -1, $enum1->compareValues( SampleEnum::KEY2 ));
+    $this->assertEquals( -1, $enum1->compareValues( SampleEnum::KEY3 ));
+    $this->assertEquals( 0, $enum1->compareValues( SampleEnum::KEY1 ));
+    $this->assertEquals( 1, $enum2->compareValues( SampleEnum::KEY1 ));
+  }
+  
+  
+  public function testLessThan() : void
+  {
+    $enum1 = new SampleEnum( SampleEnum::KEY1 );
+    $enum2 = new SampleEnum( SampleEnum::KEY2 );
+  
+    $this->assertTrue( $enum1->lessThan( $enum2 ));
+    $this->assertFalse( $enum2->lessThan( $enum1 ));
+  }
+  
+  
+  public function testLessThanValue() : void
+  {
+    $enum1 = new SampleEnum( SampleEnum::KEY1 );
+    $enum2 = new SampleEnum( SampleEnum::KEY2 );
+  
+    $this->assertTrue( $enum1->lessThanValue( SampleEnum::KEY2 ));
+    $this->assertFalse( $enum2->lessThanValue( SampleEnum::KEY1 ));    
+  }
+  
+  
+  public function testGreaterThan() : void
+  {
+    $enum1 = new SampleEnum( SampleEnum::KEY1 );
+    $enum2 = new SampleEnum( SampleEnum::KEY2 );
+  
+    $this->assertFalse( $enum1->greaterThan( $enum2 ));
+    $this->assertTrue( $enum2->greaterThan( $enum1 ));    
+  }
+  
+  
+  public function testGreaterThanValue() : void
+  {
+    $enum1 = new SampleEnum( SampleEnum::KEY1 );
+    $enum2 = new SampleEnum( SampleEnum::KEY2 );
+  
+    $this->assertFalse( $enum1->greaterThanValue( SampleEnum::KEY2 ));
+    $this->assertTrue( $enum2->greaterThanValue( SampleEnum::KEY1 ));        
+  }
+  
+  
 }

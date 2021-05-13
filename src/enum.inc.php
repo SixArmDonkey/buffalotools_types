@@ -883,7 +883,15 @@ class Enum implements IEnum
   {
     $this->constants = static::constants();
     
+    if ( empty( $this->enum ))
+    {
+      $this->enum = array_values( $this->constants );
+    }
+    
     $keys = array_keys( $this->enum );
+    
+    
+    
     
     $allInt = true;
     for ( $i = 0; $i < sizeof( $keys ); $i++ )

@@ -441,6 +441,15 @@ class Set extends BitSet implements ISet
   {
     foreach( $const as $val )
     {
+      $k = $this->getKeyFromArgument( $val );
+      if ( isset( $this->members[$k] ))
+        $this->enable( $this->members[$k] );
+      else if ( $this->isBase2( $val )) //..Now this is rarely if ever called instead of being called for everything.
+      {
+        $this->enable((int)$val );
+      }
+      
+      /*
       if ( $this->isBase2( $val )) //..I would love to get rid of this test... 
       {
         $this->enable( $val );
@@ -451,6 +460,7 @@ class Set extends BitSet implements ISet
         if ( isset( $this->members[$k] ))
           $this->enable( $this->members[$k] );
       }
+      */
     }
   }
 

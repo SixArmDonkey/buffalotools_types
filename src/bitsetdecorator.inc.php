@@ -24,6 +24,16 @@ class BitSetDecorator implements \buffalokiwi\buffalotools\types\IBitSet
   
   
   /**
+   * Retrieve the bitmask value of the set
+   * @return int Value
+   */
+  public function getValue() : int
+  {
+    return $this->set->getValue();
+  }
+  
+  
+  /**
    * Test if some bit is enabled by index position
    * @param int $position position
    * @return boolean is enabled 

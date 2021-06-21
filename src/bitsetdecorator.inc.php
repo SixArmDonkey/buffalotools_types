@@ -3,28 +3,35 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  *
- * Copyright (c) 2012-2020 John Quinn <johnquinn3@gmail.com>
+ * Copyright (c) 2012-2020 John Quinn <john@retail-rack.com>
  * 
  * @author John Quinn
  */
+
 declare( strict_types=1 );
 
 namespace buffalokiwi\buffalotools\types;
 
 
-/**
- * A simple bit set.
- * Internally, this BitSet is a single integer, which can then be used as 32 or 64 individual boolean values.
- * The BitSet class is a wrapper for those operations.
- */
-interface IBitSet
+class BitSetDecorator implements \buffalokiwi\buffalotools\types\IBitSet
 {
+  private IBitSet $set;
+  
+  public function __construct( IBitSet $set )
+  {
+    $this->set = $set;
+  }  
+  
+  
   /**
    * Test if some bit is enabled by index position
    * @param int $position position
    * @return boolean is enabled 
    */
-  public function isEnabledAt( int $position ) : bool;
+  public function isEnabledAt( int $position ) : bool
+  {
+    return $this->set->isEnabledAt( $position );
+  }
   
    
   /**
@@ -32,7 +39,10 @@ interface IBitSet
    * @param int $position position 
    * @return void
    */
-  public function toggleAt( int $position ) : void;
+  public function toggleAt( int $position ) : void
+  {
+    $this->set->toggleAt( $position );
+  }
   
   
   /**
@@ -40,7 +50,10 @@ interface IBitSet
    * @param int $position position 
    * @return void
    */
-  public function enableAt( int $position ) : void;
+  public function enableAt( int $position ) : void
+  {
+    $this->set->enableAt( $position );
+  }
   
   
   /**
@@ -48,26 +61,39 @@ interface IBitSet
    * @param int $position position 
    * @return void
    */
-  public function disableAt( int $position ) : void;
+  public function disableAt( int $position ) : void
+  {
+    $this->set->disableAt( $position );
+  }
+  
   
   /**
    * Set the internal value to a new value
    * @param int $value Value to set the mask to
    */
-  public function setValue( int $value ) : void;
+  public function setValue( int $value ) : void
+  {
+    $this->set->setValue( $value );
+  }
 
 
   /**
    * Set the value of the bitset to the value of a different bitset.
    * @param IBitSet $that Other bitset
    */
-  public function setValueOf( IBitSet $that ) : void;
+  public function setValueOf( IBitSet $that ) : void
+  {
+    $this->set->setValueOf( $that );
+  }
 
 
   /**
    * Clear the BitSet (sets internal value to zero)
    */
-  public function clear() : void;
+  public function clear() : void
+  {
+    $this->set->clear();
+  }
   
 
   /**
@@ -76,7 +102,10 @@ interface IBitSet
    * @return boolean is set
    * @throws \InvalidArgumentException if $const is not base2 
    */
-  public function isEnabled( int $const ) : bool;
+  public function isEnabled( int $const ) : bool
+  {
+    return $this->set->isEnabledAt( $const );
+  }
 
 
   /**
@@ -84,7 +113,10 @@ interface IBitSet
    * @param int $const Permission to toggle
    * @throws \InvalidArgumentException if $const is not base2 
    */
-  public function toggle( int $const ) : void;
+  public function toggle( int $const ) : void
+  {
+    $this->set->toggle( $const );
+  }
 
 
   /**
@@ -92,7 +124,10 @@ interface IBitSet
    * @param int $const bit to enable
    * @throws \InvalidArgumentException if $const is not base2 
    */
-  public function enable( int $const ) : void;
+  public function enable( int $const ) : void
+  {
+    $this->set->enbable( $const );
+  }
 
 
   /**
@@ -100,5 +135,8 @@ interface IBitSet
    * @param int $const bit to disable
    * @throws \InvalidArgumentException if $const is not base2 
    */
-  public function disable( int $const ) : void;
+  public function disable( int $const ) : void
+  {
+    $this->set->disable( $const );
+  }
 }

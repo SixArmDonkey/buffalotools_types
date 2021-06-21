@@ -136,10 +136,10 @@ class BitSet implements IBitSet
   
   /**
    * Retrieve the bitmask value of the set
-   * @return int Mask Value
+   * @return int Value
    * @final 
    */
-  public final function getValue()
+  public final function getValue() : int
   {
     return $this->value;
   }
@@ -170,7 +170,7 @@ class BitSet implements IBitSet
    * @return boolean is set
    * @throws \InvalidArgumentException if $const is not base2 
    */
-  public function isEnabled( int $const )
+  public function isEnabled( int $const ) : bool
   {
     return (( $this->value & $const ) == $const );
   }
@@ -224,7 +224,7 @@ class BitSet implements IBitSet
    * @param int $const Permission to toggle
    * @throws \InvalidArgumentException if $const is not base2 
    */
-  public function toggle( int $const )
+  public function toggle( int $const ) : void
   {
     if ( $this->isEnabled( $const ) )
       $this->value -= $const;
@@ -238,7 +238,7 @@ class BitSet implements IBitSet
    * @param int $const bit to enable
    * @throws \InvalidArgumentException if $const is not base2 
    */
-  public function enable( int $const )
+  public function enable( int $const ) : void
   {
     if ( !$this->isEnabled( $const ) )
       $this->value += $const;
@@ -250,7 +250,7 @@ class BitSet implements IBitSet
    * @param int $const bit to disable
    * @throws \InvalidArgumentException if $const is not base2 
    */
-  public function disable( int $const )
+  public function disable( int $const ) : void
   {
     if ( $this->isEnabled( $const ) )
       $this->value -= $const;

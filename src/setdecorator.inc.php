@@ -33,7 +33,7 @@ class SetDecorator extends BitSetDecorator implements ISet
    */
   public function __set( string $p, bool $v ) : void
   {
-    return parent::__set( $p, $v );
+    parent::__set( $p, $v );
   }
 
 

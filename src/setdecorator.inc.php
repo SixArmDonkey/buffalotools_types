@@ -23,6 +23,87 @@ class SetDecorator extends BitSetDecorator implements ISet
     $this->set = $set;
   }
   
+  
+
+  /**
+   * Sets a constant on or off.
+   * Simply set it to true or false
+   * @param string $p Constant
+   * @param boolean $v value
+   */
+  public function __set( string $p, bool $v ) : void
+  {
+    return parent::__set( $p, $v );
+  }
+
+
+  /**
+   * Retrieve a member value
+   * @param string $p Argument
+   * @return int Member value
+   * @throws \InvalidArgumentException if $p is not a member of the set 
+   */
+  public function __get( string $p ) : int
+  {
+    return parent::__get( $p );
+  }
+
+
+  /**
+   * A way to determine if a constant is enabled in the set
+   * ie:
+   * if ( isset( $set->TYPE ))
+   *   echo 'is set';
+   *
+   * @param string $name Constant name
+   * @return boolean is set
+   * @throws \Exception if $name is invalid
+   */
+  public function __isset( string $name ) : bool
+  {
+    return parent::__isset( $name );
+  }
+
+
+  /**
+   * Unset a bit in this set by constant name
+   * @param string $name Constant name
+   * @throws \Exception if $name is invalid
+   */
+  public function __unset( string $name ) : void
+  {
+    parent::__unset( $name );
+  }
+
+
+  /**
+   * A way to determine if a constant in this set is enabled
+   * ie:
+   * if ( $set->TYPE())
+   *   echo 'is set';
+   * 
+   * Invalid member names will always return false
+   * @param string $name Constant name
+   * @param array $arguments function arguments
+   * @return boolean is set   
+   */
+  public function __call( string $name, array $arguments )
+  {
+    return parent::__call( $name, $arguments );
+  }
+
+
+  
+  /**
+   * Returns an imploded list of the set members
+   * @return int
+   */
+  public function __toString() : string
+  {
+    return parent::__toString();
+  }
+  
+  
   /**
    * Adds a member to this set 
    * @param string $name name 

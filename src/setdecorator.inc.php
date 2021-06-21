@@ -33,7 +33,7 @@ class SetDecorator extends BitSetDecorator implements ISet
    */
   public function __set( string $p, bool $v ) : void
   {
-    parent::__set( $p, $v );
+    $this->set->__set( $p, $v );
   }
 
 
@@ -45,7 +45,7 @@ class SetDecorator extends BitSetDecorator implements ISet
    */
   public function __get( string $p ) : int
   {
-    return parent::__get( $p );
+    return $this->set->__get( $p );
   }
 
 
@@ -61,7 +61,7 @@ class SetDecorator extends BitSetDecorator implements ISet
    */
   public function __isset( string $name ) : bool
   {
-    return parent::__isset( $name );
+    return $this->set->__isset( $name );
   }
 
 
@@ -72,7 +72,7 @@ class SetDecorator extends BitSetDecorator implements ISet
    */
   public function __unset( string $name ) : void
   {
-    parent::__unset( $name );
+    $this->set->__unset( $name );
   }
 
 
@@ -89,7 +89,7 @@ class SetDecorator extends BitSetDecorator implements ISet
    */
   public function __call( string $name, array $arguments )
   {
-    return parent::__call( $name, $arguments );
+    return $this->set->__call( $name, $arguments );
   }
 
 
@@ -100,7 +100,7 @@ class SetDecorator extends BitSetDecorator implements ISet
    */
   public function __toString() : string
   {
-    return parent::__toString();
+    return $this->set->__toString();
   }
   
   

@@ -101,4 +101,11 @@ interface IBitSet
    * @throws \InvalidArgumentException if $const is not base2 
    */
   public function disable( int $const ) : void;
+  
+  
+  /**
+   * Retrieve the bitmask value of the set
+   * @return int Value
+   */
+  public function getValue() : int;  
 }

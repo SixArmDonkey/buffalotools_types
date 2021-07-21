@@ -36,8 +36,7 @@ RuntimeEnum may be used to create Enum objects on the fly.
 
 Here's an example of how to create an Enum implementation.
 1. Create a class that extends Enum.
-2. Optionally add enum values as class constants.
-3. List the enum values in a protected array property named "$enum".
+2. Add enum values as class constants and/or list the enum values in a protected array property named $enum.
 
 
 ```php
@@ -47,7 +46,7 @@ class EnumImpl extends Enum
   const KEY1 = 'key1';
   const KEY2 = 'key2';
 
-  //..Required $enum array property containing all possible enum values.
+  //..Optional $enum array property containing all possible enum values
   protected array $enum = [
     self::KEY1,
     self::KEY2
@@ -63,6 +62,28 @@ class EnumImpl extends Enum
   } 
 }
 ```
+
+```php
+//..Creating an enum using only constants 
+class EnumImpl extends Enum
+{
+  const KEY1 = 'key1';
+  const KEY2 = 'key2';
+}
+```
+
+```php
+//..Creating an enum using the $enum property
+class EnumImpl extends Enum
+{
+  protected array $enum = [
+    'key1',
+    'key2'
+  ];
+}
+```
+
+
 
 Optionally, Enum can also contain additional values  
 

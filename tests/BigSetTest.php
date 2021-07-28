@@ -199,4 +199,24 @@ class BigSetTest extends AbstractBigSetTest
     
     $this->assertEquals( implode( ',', [SampleBigSet::KEY1, SampleBigSet::KEY2] ), (string)$this->set );
   }
+  
+  
+  
+  /**
+   * Test that members can be added to an empty bigset
+   * @return void
+   */
+  public function testCreateEmptyAddMember() : void
+  {
+    $s = new \buffalokiwi\buffalotools\types\BigSet();
+    
+    //..Internally, this caches the result, so calling this, then calling addMember 
+    //  causes the next call to isMember to return the cached value of false
+    $this->assertFalse( $s->isMember( 'test' ));
+    
+    $s->addMember( 'test' );
+    
+    $this->assertTrue( $s->isMember( 'test' ));
+    $this->assertTrue( in_array( 'test', $s->getMembers()));    
+  }
 }

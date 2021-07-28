@@ -165,7 +165,9 @@ class BigSet implements IBigSet
     foreach( $name as $n )
     {
       if ( !in_array( $n, $this->members ))
-        $this->members[] = $n;      
+        $this->members[] = $n;
+      
+      $this->memberCache[$n] = true;
     }    
   }
   
@@ -345,11 +347,14 @@ class BigSet implements IBigSet
       foreach( $const as $c )
       { 
         
+        
         if ( isset( $this->constants[$c] ))
           $c = $this->constants[$c];             
         
         if ( isset( $this->memberCache[$c] ) && !$this->memberCache[$c] )
+        {
           return $this->memberCache[$c];
+        }
         
         
         //..This was a fairly huge gain vs an exception.

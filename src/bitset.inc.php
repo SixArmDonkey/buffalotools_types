@@ -268,6 +268,8 @@ class BitSet implements IBitSet
    */
   protected final function isBase2( $i ) : bool
   {
+    //..Because the Set class still supports integers.
+    //..This is an optimization based on the results of the profiler.  Do not remove.
     if ( isset( self::$RUNTIME[$i] ))
       return self::$RUNTIME[$i];
     else if ( !ctype_digit((string)$i ))

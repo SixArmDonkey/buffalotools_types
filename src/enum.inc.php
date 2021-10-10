@@ -345,14 +345,18 @@ class Enum implements IEnum
    */
   public static function constants() : array
   {
-    $c = [];
-    //..This is marginally faster than using defined()/constant() everywhere...
-    foreach( array_keys(( new ReflectionClass( static::class ))->getConstants()) as $val )
-    {
-      $c[$val] = constant( 'static::' . $val );
-    }    
+    $out = [];
     
-    return $c;
+    foreach(( new ReflectionClass( static::class ))->getReflectionConstants() as $c )
+    {
+      /* @var $c \ReflectionClassConstant */
+      if ( !$c->isPublic())
+        continue;
+      
+      $out[$c->getName()] = $c->getValue();
+    }
+    
+    return $out;    
   }
   
   

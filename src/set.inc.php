@@ -120,6 +120,9 @@ use ReflectionClass;
  * $set->getTotal(); //..Returns 3
  * 
  * @see BitSet 
+ * 
+ * @todo This class has at least 4 WTF's per minute.
+ * @todo Consider removing calls to isBase2().  There isn't much that uses it.
  */
 class Set extends BitSet implements ISet
 {
@@ -152,11 +155,14 @@ class Set extends BitSet implements ISet
    * @param ... accepts variable arguments 'var1','var2'... variables to set initially
    * @throws InvalidArgumentException if any constants contain characters other
    * than [a-zA-Z0-9]
+   * 
+   * @todo Remove support for legacy stuff 
    */
   public function __construct( ...$init )
   {
-    parent::__construct( 0 );
+    //..This is a clusterfuck.  
     
+    parent::__construct( 0 );
     
     //..If the default values passed is an array, and there is only a single
     //  argument, use that as the default list.
@@ -176,13 +182,13 @@ class Set extends BitSet implements ISet
       $cls = static::class;
     }
     
-    
     //..This might be the worst thing I've ever done...
-    //..There's just too much code based on this class to change the arguments.
     if ( stripos( $cls, 'runtime' ) !== false )
     {
       if ( empty( $this->members ) && defined( 'static::MEMBERS' ))
         $this->members = static::MEMBERS;
+      else if ( empty( $this->members ))
+        $this->members = array_values( static::constants());
       
       $cls = implode( '',  $this->members );
     }    
@@ -193,10 +199,13 @@ class Set extends BitSet implements ISet
     
     if ( !isset( self::$RUNTIME[$this->cls] ))
     {
+      $this->constants = static::constants();      
+      
       if ( empty( $this->members ) && defined( 'static::MEMBERS' ))
         $this->members = static::MEMBERS;
+      else if ( empty( $this->members ))
+        $this->members = array_values( $this->constants );
       
-      $this->constants = static::constants();      
       $this->initializeSet( $this->members );
     }
     else
@@ -205,11 +214,13 @@ class Set extends BitSet implements ISet
       $this->total =& self::$RUNTIME[$this->cls][1];
       $this->constants =& self::$RUNTIME[$this->cls][3];
       
+      //..WTF
       if ( defined( 'static::MEMBERS' ))
         $mList = static::MEMBERS;
       else
         $mList = [];
       
+      //..Seriously, WTF.
       foreach( $mList as $m )
       {
         if ( !isset( self::$RUNTIME[$this->cls][0][$m] ))
@@ -236,14 +247,18 @@ class Set extends BitSet implements ISet
    */
   public static function constants() : array
   {
-    $c = [];
-    //..This is marginally faster than using defined()/constant() everywhere...
-    foreach( array_keys(( new ReflectionClass( static::class ))->getConstants()) as $val )
-    {
-      $c[$val] = constant( 'static::' . $val );
-    }    
+    $out = [];
     
-    return $c;
+    foreach(( new ReflectionClass( static::class ))->getReflectionConstants() as $c )
+    {
+      /* @var $c \ReflectionClassConstant */
+      if ( !$c->isPublic())
+        continue;
+      
+      $out[$c->getName()] = $c->getValue();
+    }
+    
+    return $out;
   }  
   
   
@@ -259,8 +274,13 @@ class Set extends BitSet implements ISet
       throw new \Exception( "Total number of members must not exceed " . (( PHP_INT_SIZE * 8 ) - 1 ) . ' on this system. got ' . sizeof( $this->members ));
 
     //..loop through the members and shift some bits
+    
+    /**
+     * @todo This can be better.  wtf
+     */
     foreach ( $members as $v )
     {
+      //..Is this necessary?
       if ( !preg_match( '/^([a-zA-Z0-9_\-]+)$/', $v ))
       {
         throw new InvalidArgumentException( '"' . $v . '" is an invalid constant name and must match the pattern: /^([a-zA-Z0-9_\-]+)$/' );
@@ -292,6 +312,9 @@ class Set extends BitSet implements ISet
    */
   public final function addMember( string $name ) : void
   {
+    /**
+     * @todo Stop repeating yourself
+     */
     if ( sizeof( $this->members ) + 1 > ( PHP_INT_SIZE * 8 ) - 1 )
       throw new \Exception( "Total number of members must not exceed " . (( PHP_INT_SIZE * 8 ) - 1 ) . ' on this system. got ' . sizeof( $this->members ));
           
@@ -311,7 +334,9 @@ class Set extends BitSet implements ISet
    */
   public function equals( ISet $that ) : bool
   {
-    //..This should be checking bitset total instead of imploding.  WTF Man.
+    /**
+     * @todo This should be checking bitset total instead of imploding.  WHAT THE WTF.
+     */
     return ( get_class( $this ) == get_class( $that )
       && implode( '', $this->getActiveMembers()) == implode( '', $that->getActiveMembers()));
   }
@@ -448,19 +473,6 @@ class Set extends BitSet implements ISet
       {
         $this->enable((int)$val );
       }
-      
-      /*
-      if ( $this->isBase2( $val )) //..I would love to get rid of this test... 
-      {
-        $this->enable( $val );
-      }
-      else 
-      {
-        $k = $this->getKeyFromArgument( $val );
-        if ( isset( $this->members[$k] ))
-          $this->enable( $this->members[$k] );
-      }
-      */
     }
   }
 
@@ -587,7 +599,7 @@ class Set extends BitSet implements ISet
     
     
     //..This ONLY WORKS BECAUSE getKeyFromArgument() calls isMember() and that
-    //..throws an exception.
+    //  throws an exception.
     return true;
   }
 
@@ -598,10 +610,11 @@ class Set extends BitSet implements ISet
    */
   public function getActiveMembers() : array
   {
+    //..Kinda funny how this was written long before 5.4 was released
     $a = array();
+    
     foreach ( $this->members as $k => $v )
     {
-      //if ( $this->hasVal( $k ))
       if ( $this->isEnabled((int)$v ))
         $a[] = $k;
     }
@@ -657,6 +670,9 @@ class Set extends BitSet implements ISet
   {
     foreach( $const as $c )
     {
+      /**
+       * @todo Is it necessary to support this? 
+       */
       if ( $this->isBase2( $c ))
         $this->toggle((int)$c );
       else 

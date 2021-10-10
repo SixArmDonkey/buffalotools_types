@@ -13,6 +13,7 @@ declare( strict_types=1 );
 use buffalokiwi\buffalotools\types\IBitSet;
 
 require_once( __DIR__ . '/SampleSet.php' );
+require_once( __DIR__ . '/SampleSetConst.php' );
 
 
 class SetTest extends AbstractSetTest
@@ -26,6 +27,10 @@ class SetTest extends AbstractSetTest
   {
     return new SampleSet();
   }
+  
+  
+  
+  
   
   
   /**
@@ -197,4 +202,13 @@ class SetTest extends AbstractSetTest
     
     $this->assertEquals( implode( ',', [SampleSet::KEY1, SampleSet::KEY2] ), (string)$this->set );
   }
+  
+  
+  public function testConstInit() : void
+  {
+    $set = new SampleSetConst();
+    
+    $this->assertEquals( 3, sizeof( $set->getMembers()));
+    $this->assertTrue( $set->isMember( 'value1', 'value2', 'value3' ));
+  }  
 }

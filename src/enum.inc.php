@@ -508,6 +508,17 @@ class Enum implements IEnum
   
   
   /**
+   * Set the enum as read only 
+   * @return void
+   */
+  public function lock() : void
+  {
+    $this->hasSetValue = true;
+    $this->readOnly = true;
+  }
+  
+  
+  /**
    * Sets the on change event.  This can attach multiple events.
    * @param \Closure $onChange on change f( IEnum $enum, string $oldValue, string $newValue ) : void
    * @return void

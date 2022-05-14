@@ -212,4 +212,11 @@ interface IEnum extends JsonSerializable
   
   
   public function greaterThanValue( string $that ) : bool;  
+  
+  
+  /**
+   * Set the enum as read only 
+   * @return void
+   */
+  public function lock() : void;  
 }

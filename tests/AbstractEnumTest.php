@@ -118,4 +118,18 @@ abstract class AbstractEnumTest extends TestCase
     $this->expectException( TypeError::class );
     $this->instance->is( null );    
   }
+  
+  
+  public function testLock() : void
+  {
+    $this->instance->setValue( $this->element );
+    $this->assertEquals( $this->element, $this->instance->value());
+    $this->instance->lock();
+    try {
+      $this->instance->setValue( $this->element );
+      $this->fail( 'Set value must throw exception after lock()' );
+    } catch( \Exception $e ) {
+      //..Expected
+    }
+  }
 }

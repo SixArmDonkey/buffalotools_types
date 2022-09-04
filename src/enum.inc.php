@@ -422,7 +422,7 @@ class Enum implements IEnum
     else
       throw new InvalidArgumentException( __CLASS__ . '::' . $name . ' is not a valid member of this enum' );
 
-    return new static( $val, true, ( isset( $arguments[0] ) && is_bool( $arguments[0] ) && $arguments[0] ) ? true : false );
+    return new static( $val, true, ( isset( $arguments[0] ) && is_bool( $arguments[0] ) && $arguments[0] === false ) ? false : true );
   }
 
   
